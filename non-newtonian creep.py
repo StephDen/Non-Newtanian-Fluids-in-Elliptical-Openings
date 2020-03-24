@@ -51,61 +51,95 @@ class closure(material_model):
 # ------------------------
 # MAIN
 #-------------------------
-        
+
 # import modules
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+import matplotlib.ticker as ticker
 import math
 
-# create matplotlib objects
-fig, ax = plt.subplots()
-plt.subplots_adjust(left = 0.26, bottom=0.4)
+if __name__ == '__main__':
+    print("Loading...")
+    # create matplotlib objects
+    fig, ax = plt.subplots()
+    plt.subplots_adjust(left = 0.26, bottom=0.4)
+    # Setup a plot such that only the bottom spine is shown
+    def setup(ax):
+        ax.spines['right'].set_color('none')
+        ax.spines['left'].set_color('none')
+        ax.yaxis.set_major_locator(ticker.NullLocator())
+        ax.spines['top'].set_color('none')
+        ax.xaxis.set_ticks_position('bottom')
+        ax.tick_params(which='major', width=1.00)
+        ax.tick_params(which='major', length=5)
+        ax.tick_params(which='minor', width=0.75)
+        ax.tick_params(which='minor', length=2.5)
+        ax.set_xlim(0, 5)
+        ax.set_ylim(0, 1)
+        ax.patch.set_alpha(0.0)
 
-# create closure class
-closure = closure(1,1,1,1,1,1,1)
-
-# create sliders
-axcolor = 'lightgoldenrodyellow'
-ax_avg_radius = plt.axes([0.25,0.3,0.65,0.03], facecolor = axcolor)
-ax_epsilon_o = plt.axes([0.25,0.25,0.65,0.03], facecolor = axcolor)
-ax_I = plt.axes([0.25,0.2,0.65,0.03], facecolor = axcolor)
-ax_M = plt.axes([0.25,0.15,0.65,0.03], facecolor = axcolor)
-ax_Pr = plt.axes([0.25,0.1,0.65,0.03], facecolor = axcolor) 
-ax_sigma_o = plt.axes([0.25,0.05,0.65,0.03], facecolor = axcolor)
-ax_r = plt.axes([0.25,0,0.65,0.03], facecolor = axcolor)
+    setup(ax)
+    ax.xaxis.set_major_locator(ticker.AutoLocator())
+    ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+    ax.set_title('$\overline{v}$')
+    l,= plt.plot(0,0,'ro')
 
 
-s_avg_radius = Slider(ax_avg_radius, 'Average Radius', 0.1, 30.0, valinit=0.1,valstep=0.5)
-s_epsilon_o = Slider(ax_epsilon_o, '$\epsilon_o$', 0.1, 30.0, valinit=0.1,valstep=0.5)
-s_I = Slider(ax_I, 'I', 0.1, 30.0, valinit=0.1,valstep=0.5)
-s_M = Slider(ax_M, 'M', 0.1, 30.0, valinit=0.1,valstep=0.5)
-s_Pr = Slider(ax_Pr, 'Pr', 0.1, 30.0, valinit=0.1,valstep=0.5)
-s_sigma_o = Slider(ax_sigma_o, '$\sigma_o$', 0.1, 30.0, valinit=0.1,valstep=0.5)
-s_r = Slider(ax_r, 'r', 0.1, 30.0, valinit=0.1,valstep=0.5)
+    # create closure class
+    closure = closure(1,1,1,1,1,1,1)
 
-# update on change function
-def update(val):
-    closure.avg_radius = s_avg_radius.val
-    closure.epsilon_o = s_epsilon_o.val
-    closure.I = s_I.val
-    closure.M = s_M.val
-    closure.Pr = s_Pr.val
-    closure.sigma_o = s_sigma_o.val
-    closure.r = s_r.val
+    # create sliders
+    axcolor = 'lightgoldenrodyellow'
+    ax_avg_radius = plt.axes([0.25,0.3,0.65,0.03], facecolor = axcolor)
+    ax_epsilon_o = plt.axes([0.25,0.25,0.65,0.03], facecolor = axcolor)
+    ax_I = plt.axes([0.25,0.2,0.65,0.03], facecolor = axcolor)
+    ax_M = plt.axes([0.25,0.15,0.65,0.03], facecolor = axcolor)
+    ax_Pr = plt.axes([0.25,0.1,0.65,0.03], facecolor = axcolor) 
+    ax_sigma_o = plt.axes([0.25,0.05,0.65,0.03], facecolor = axcolor)
+    ax_r = plt.axes([0.25,0,0.65,0.03], facecolor = axcolor)
+
+
+    s_avg_radius = Slider(ax_avg_radius, 'Average Radius', 1, 1000, valinit=1,valstep=10)
+    s_epsilon_o = Slider(ax_epsilon_o, '$\epsilon_o$', 0, 1, valinit=0,valstep=0.1)
+    s_I = Slider(ax_I, 'I', 1, 1.2, valinit=1,valstep=0.01)
+    s_M = Slider(ax_M, 'M', 0, 1000, valinit=0,valstep=10)
+    s_Pr = Slider(ax_Pr, 'Pr', 0, 1000, valinit=0,valstep=10)
+    s_sigma_o = Slider(ax_sigma_o, '$\sigma_o$', 0, 1000, valinit=0,valstep=10)
+    s_r = Slider(ax_r, 'r', 1, 1000, valinit=1,valstep=10)
+
+    # update on change function
+    def update(val):
+        #remove previous text
+        for text in ax.texts:
+            text.set_visible(False)
+            
+        closure.avg_radius = s_avg_radius.val
+        closure.epsilon_o = s_epsilon_o.val
+        closure.I = s_I.val
+        closure.M = s_M.val
+        closure.Pr = s_Pr.val
+        closure.sigma_o = s_sigma_o.val
+        closure.r = s_r.val
+        
+        average_closure_rate =  closure.calc_closure_rate()
     
-    average_closure_rate = closure.calc_closure_rate()
-    ax.text(0.1,0.9,average_closure_rate, fontsize=15)
-    fig.canvas.draw_idle()
+        l.set_xdata(average_closure_rate)
+        
+        ax.relim()
+        ax.autoscale(axis = 'x')
+        ax.text(sum(ax.get_xlim())/2,0.1,average_closure_rate)
+        fig.canvas.draw_idle()
 
-# bind update on change function to sliders
-s_avg_radius.on_changed(update)
-s_avg_radius.on_changed(update)
-s_epsilon_o.on_changed(update)
-s_I.on_changed(update)
-s_M.on_changed(update)
-s_Pr.on_changed(update)
-s_sigma_o.on_changed(update)
-s_r.on_changed(update)
+    # bind update on change function to sliders
+    s_avg_radius.on_changed(update)
+    s_avg_radius.on_changed(update)
+    s_epsilon_o.on_changed(update)
+    s_I.on_changed(update)
+    s_M.on_changed(update)
+    s_Pr.on_changed(update)
+    s_sigma_o.on_changed(update)
+    s_r.on_changed(update)
 
-# show plot
-plt.show()
+    # show plot
+    plt.show()
+
