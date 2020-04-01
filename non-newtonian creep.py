@@ -100,13 +100,13 @@ if __name__ == '__main__':
     ax_r = plt.axes([0.25,0,0.65,0.03], facecolor = axcolor)
 
 
-    s_avg_radius = Slider(ax_avg_radius, 'Average Radius', 1, 1000, valinit=1,valstep=10)
+    s_avg_radius = Slider(ax_avg_radius, '$\overline{r}$', 0, 1000, valinit=1,valstep=1)
     s_epsilon_o = Slider(ax_epsilon_o, '$\epsilon_o$', 0, 1, valinit=0,valstep=0.1)
-    s_I = Slider(ax_I, 'I', 1, 1.2, valinit=1,valstep=0.01)
-    s_M = Slider(ax_M, 'M', 0, 1000, valinit=0,valstep=10)
-    s_Pr = Slider(ax_Pr, 'Pr', 0, 1000, valinit=0,valstep=10)
-    s_sigma_o = Slider(ax_sigma_o, '$\sigma_o$', 0, 1000, valinit=0,valstep=10)
-    s_r = Slider(ax_r, 'r', 1, 1000, valinit=1,valstep=10)
+    s_I = Slider(ax_I, 'I', 1, 2, valinit=1,valstep=0.1)
+    s_M = Slider(ax_M, 'M', 0, 6, valinit=0,valstep=1)
+    s_Pr = Slider(ax_Pr, 'Pr', 0, 500, valinit=0,valstep=1)
+    s_sigma_o = Slider(ax_sigma_o, '$\sigma_o$', 0, 150, valinit=0,valstep=10)
+    s_r = Slider(ax_r, 'r', 1, 10000, valinit=1,valstep=10)
 
     # update on change function
     def update(val):
