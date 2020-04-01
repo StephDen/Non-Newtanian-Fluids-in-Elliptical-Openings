@@ -5,6 +5,7 @@ Created on Mon Feb 17 13:07:42 2020
 
 @author: stephen
 """
+print("Initiating...")
 # parent material model class
 class material_model:
     
